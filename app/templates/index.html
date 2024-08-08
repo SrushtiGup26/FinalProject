@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spam Filter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Spam Filter Application</h1>
+        <form id="message-form">
+            <label for="message">Enter your message:</label>
+            <textarea id="message" name="content" rows="4" placeholder="Type your message here..."></textarea>
+            <button type="submit">Submit</button>
+        </form>
+        <div id="result" class="hidden">
+            <h2>Result</h2>
+            <p id="result-text"></p>
+        </div>
+    </div>
+    <script>
+        document.getElementById('message-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const content = document.getElementById('message').value;
+            const response = await fetch('/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ content })
+            });
+            const result = await response.json();
+            const resultText = result.spam ? "This message is SPAM." : "This message is NOT SPAM.";
+            document.getElementById('result-text').innerText = resultText;
+            document.getElementById('result').classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
